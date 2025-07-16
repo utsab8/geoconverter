@@ -2,10 +2,14 @@ from rest_framework import serializers
 from .models import File
 
 class FileSerializer(serializers.ModelSerializer):
+    file_size = serializers.SerializerMethodField()
     class Meta:
         model = File
-        fields = ['id', 'user', 'file', 'uploaded_at', 'original_name']
-        read_only_fields = ['id', 'user', 'uploaded_at', 'original_name']
+        fields = ['id', 'user', 'file', 'uploaded_at', 'original_name', 'file_size']
+        read_only_fields = ['id', 'user', 'uploaded_at', 'original_name', 'file_size']
+
+    def get_file_size(self, obj):
+        return obj.file.size if obj.file else None
 
     def validate_file(self, value):
         valid_mime_types = [
